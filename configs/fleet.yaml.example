@@ -1,0 +1,80 @@
+# Fleet Configuration File
+# This file is used to configure the Fleet CLI tool for managing multiple Kubernetes clusters.
+#
+# Default location: ~/.fleet/config.yaml or ~/.fleet.yaml
+#
+# You can override this location with the --config flag:
+#   fleet --config /path/to/config.yaml cluster list
+
+# defaultContext specifies the default kubeconfig context to use
+# If not specified, the current context from kubeconfig will be used
+defaultContext: ""
+
+# clusters section allows you to add metadata to your clusters
+# The key should match a context name from your kubeconfig
+clusters:
+  # Example production cluster
+  my-prod-cluster:
+    context: my-prod-cluster              # Must match a context in kubeconfig
+    alias: production                     # Friendly name for the cluster
+    enabled: true                         # Whether to include in operations
+    labels:
+      env: production                     # Custom labels for filtering
+      region: us-east-1
+      tier: critical
+
+  # Example staging cluster
+  my-staging-cluster:
+    context: my-staging-cluster
+    alias: staging
+    enabled: true
+    labels:
+      env: staging
+      region: us-west-2
+      tier: standard
+
+  # Example development cluster
+  my-dev-cluster:
+    context: my-dev-cluster
+    alias: dev
+    enabled: true
+    labels:
+      env: development
+      region: us-west-1
+      tier: standard
+
+  # Example disabled cluster (won't be used in operations)
+  my-old-cluster:
+    context: my-old-cluster
+    alias: legacy
+    enabled: false
+    labels:
+      env: deprecated
+
+# defaults section configures default behavior
+defaults:
+  # timeout for API operations (duration: e.g., "30s", "1m", "5m")
+  timeout: 30s
+
+  # number of parallel cluster operations
+  parallel: 5
+
+  # default output format: table, json, or yaml
+  outputFormat: table
+
+  # disable colored output by default
+  noColor: false
+
+# Example usage:
+#
+# List all enabled clusters:
+#   fleet cluster list
+#
+# List clusters with labels:
+#   fleet cluster list --show-labels
+#
+# Filter clusters by label (future feature):
+#   fleet get pods --label env=production
+#
+# Use specific output format:
+#   fleet cluster list -o json
